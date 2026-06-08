@@ -38,8 +38,8 @@ const [empates, setEmpates] = useState(0);
     ) {
       return quadradosTemp[a] === "X"
         ? "Jogador 1 venceu!"
-        : "Jogador 2 
-        }
+        : "Jogador 2 venceu!";
+    }
   }
 
   if (quadradosTemp.every(quadrado => quadrado !== null)) {
