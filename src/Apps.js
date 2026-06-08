@@ -17,36 +17,42 @@ const [empates, setEmpates] = useState(0);
 
 
   function calcularVencedor(quadradosTemp) {
-    if ((quadradosTemp[0]=="X" && quadradosTemp[1]=="X" && quadradosTemp[2]=="X")
-      || (quadradosTemp[3]=="X" && quadradosTemp[4]=="X" && quadradosTemp[5]=="X")
-      || (quadradosTemp[6]=="X" && quadradosTemp[7]=="X" && quadradosTemp[8]=="X")
+  const linhas = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ];
+
+  for (let i = 0; i < linhas.length; i++) {
+    const [a, b, c] = linhas[i];
+
+    if (
+      quadradosTemp[a] &&
+      quadradosTemp[a] === quadradosTemp[b] &&
+      quadradosTemp[a] === quadradosTemp[c]
     ) {
-      console.log("Jogador 1 Venceu!");
-      return "Jogador 1 venceu!";
-    } else if ((quadradosTemp[0]=="O" && quadradosTemp[1]=="O" && quadradosTemp[2]=="O")
-      || (quadradosTemp[3]=="O" && quadradosTemp[4]=="O" && quadradosTemp[5]=="O")
-      || (quadradosTemp[6]=="O" && quadradosTemp[7]=="O" && quadradosTemp[8]=="O")
-    ) {
-        console.log("Jogador 2 Venceu!");
-        return "Jogador 2 venceu!";
-    } else if (
-      quadradosTemp[0]!=null && 
-      quadradosTemp[1]!=null && 
-      quadradosTemp[2]!=null && 
-      quadradosTemp[3]!=null && 
-      quadradosTemp[4]!=null && 
-      quadradosTemp[5]!=null && 
-      quadradosTemp[6]!=null && 
-quadradosTemp[7]!=null && 
-quadradosTemp[8]!=null
-    ) {
-      console.log("Deu empate!");
-      return "Deu empate!";
-    }
-    return null;
+      return quadradosTemp[a] === "X"
+        ? "Jogador 1 venceu!"
+        : "Jogador 2 
+        }
+  }
+
+  if (quadradosTemp.every(quadrado => quadrado !== null)) {
+    return "Deu empate!";
+  }
+
+  return null;
   }
 
   function handleClick(i) {
+     if (status !== null) {
+    return;
+     }
     const quadradoTemp = quadrados.slice();
     if (quadradoTemp[i]!=null) {
       return;
