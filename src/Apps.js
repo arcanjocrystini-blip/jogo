@@ -10,6 +10,12 @@ export default function Campo() {
   const [quadrados, setQuadrados] = useState(Array(9).fill(null));
   const [estado, setEstado] = useState(false);
   const [status, setStatus] = useState(null);
+  const [placarX, setPlacarX] = useState(0);
+ const [placarO, setPlacarO] = useState(0);
+const [empates, setEmpates] = useState(0);
+const [historico, setHistorico] = useState([]);
+const [linhaVencedora, setLinhaVencedora] = useState([]);
+const [contraMaquina, setContraMaquina] = useState(false);
   
 
 
@@ -77,11 +83,6 @@ quadradosTemp[8]!=null
     </div>
     <div><h1>{status}</h1></div>
     <BotaoReiniciar setQuadrados={setQuadrados} setEstado={setEstado} setStatus={setStatus}/>
+
   </>;
 }
-const [placarX, setPlacarX] = useState(0);
-const [placarO, setPlacarO] = useState(0);
-const [empates, setEmpates] = useState(0);
-const [historico, setHistorico] = useState([]);
-const [linhaVencedora, setLinhaVencedora] = useState([]);
-const [contraMaquina, setContraMaquina] = useState(false);
