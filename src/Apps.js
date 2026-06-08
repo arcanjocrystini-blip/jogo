@@ -11,11 +11,11 @@ export default function Campo() {
   const [estado, setEstado] = useState(false);
   const [status, setStatus] = useState(null);
   const [placarX, setPlacarX] = useState(0);
- const [placarO, setPlacarO] = useState(0);
-const [empates, setEmpates] = useState(0);
-const [historico, setHistorico] = useState([]);
-const [linhaVencedora, setLinhaVencedora] = useState([]);
-const [contraMaquina, setContraMaquina] = useState(false);
+  const [placarO, setPlacarO] = useState(0);
+  const [empates, setEmpates] = useState(0);
+  const [historico, setHistorico] = useState([]);
+  const [linhaVencedora, setLinhaVencedora] = useState([]);
+  const [contraMaquina, setContraMaquina] = useState(false);
   
 
 
@@ -62,21 +62,35 @@ quadradosTemp[8]!=null
     }
     setQuadrados(quadradoTemp);
     setEstado(!estado);
-    setStatus(calcularVencedor(quadradoTemp));
+    const vencedor = calcularVencedor(quadradoTemp);
+
+if (vencedor === "Jogador 1 venceu!") {
+  setPlacarX(placarX + 1);
+}
+
+if (vencedor === "Jogador 2 venceu!") {
+  setPlacarO(placarO + 1);
+}
+
+if (vencedor === "Deu empate!") {
+  setEmpates(empates + 1);
+}
+
+setStatus(vencedor);
 
   }
   return <>
-    <div class="board-row">
+    <div className="board-row">
       <Square valor={quadrados[0]} func={() =>handleClick(0)} />
       <Square valor={quadrados[1]} func={() =>handleClick(1)}/>
       <Square valor={quadrados[2]} func={() =>handleClick(2)}/>
     </div>
-    <div class="board-row">
+    <div className="board-row">
       <Square valor={quadrados[3]} func={() =>handleClick(3)}/>
       <Square valor={quadrados[4]} func={() =>handleClick(4)}/>
       <Square valor={quadrados[5]} func={() =>handleClick(5)}/>
     </div>
-    <div class="board-row">
+    <div className="board-row">
       <Square valor={quadrados[6]} func={() =>handleClick(6)}/>
       <Square valor={quadrados[7]} func={() =>handleClick(7)}/>
       <Square valor={quadrados[8]} func={() =>handleClick(8)}/>  
