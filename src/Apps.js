@@ -10,12 +10,7 @@ export default function Campo() {
   const [quadrados, setQuadrados] = useState(Array(9).fill(null));
   const [estado, setEstado] = useState(false);
   const [status, setStatus] = useState(null);
-  const [placarX, setPlacarX] = useState(0);
-  const [placarO, setPlacarO] = useState(0);
-  const [empates, setEmpates] = useState(0);
-  const [historico, setHistorico] = useState([]);
-  const [linhaVencedora, setLinhaVencedora] = useState([]);
-  const [contraMaquina, setContraMaquina] = useState(false);
+  
   
 
 
@@ -96,6 +91,12 @@ setStatus(vencedor);
       <Square valor={quadrados[8]} func={() =>handleClick(8)}/>  
     </div>
     <div><h1>{status}</h1></div>
+    <div>
+  <h2>Placar</h2>
+  <p>Jogador X: {placarX}</p>
+  <p>Jogador O: {placarO}</p>
+  <p>Empates: {empates}</p>
+</div>
     <BotaoReiniciar setQuadrados={setQuadrados} setEstado={setEstado} setStatus={setStatus}/>
 
   </>;
