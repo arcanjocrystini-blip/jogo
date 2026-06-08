@@ -79,3 +79,9 @@ quadradosTemp[8]!=null
     <BotaoReiniciar setQuadrados={setQuadrados} setEstado={setEstado} setStatus={setStatus}/>
   </>;
 }
+const [placarX, setPlacarX] = useState(0);
+const [placarO, setPlacarO] = useState(0);
+const [empates, setEmpates] = useState(0);
+const [historico, setHistorico] = useState([]);
+const [linhaVencedora, setLinhaVencedora] = useState([]);
+const [contraMaquina, setContraMaquina] = useState(false);
