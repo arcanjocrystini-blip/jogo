@@ -88,3 +88,15 @@
   .game-info {
     margin-left: 20px;
   }
+
+  .vencedor {
+    background-color: yellow;
+    border: 3px solid green;
+  }
+  .placar {
+    margin-top: 20px;
+    font-weight: bold;
+  }
+  .historico {
+    margin-top: 20px;
+  }
