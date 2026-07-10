@@ -100,3 +100,74 @@
   .historico {
     margin-top: 20px;
   }
+
+/* ===========================
+   Tabuleiro
+=========================== */
+
+.board-row {
+  display: flex;
+}
+
+.square {
+  width: 80px;
+  height: 80px;
+  margin: 2px;
+  border: 2px solid #555;
+  background: white;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.square img {
+  width: 60px;
+  height: 60px;
+}
+
+/* Destaque da vitória */
+
+.winner {
+  background-color: gold;
+  border: 3px solid green;
+}
+
+/* ===========================
+   Pokémon
+=========================== */
+
+.pokemon-selector {
+  margin-bottom: 25px;
+}
+
+.pokemon-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin-bottom: 20px;
+}
+
+.pokemon-inputs input {
+  padding: 6px;
+  width: 150px;
+  text-align: center;
+}
+
+/* ===========================
+   Placar
+=========================== */
+
+.scoreboard {
+  margin-top: 20px;
+}
+
+.score-item {
+  margin-bottom: 15px;
+}
+
+.score-item img {
+  display: block;
+  margin: auto;
+}
