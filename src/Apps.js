@@ -1,111 +1,323 @@
-import { useState } from 'react';  
-import { BotaoReiniciar } from './Reiniciar';
+import { useState, useEffect } from "react";
+import Board from "./Board";
+import Scoreboard from "./Scoreboard";
+import PokemonSelector from "./PokemonSelector";
+import { BotaoReiniciar } from "./Reiniciar";
 
+export default function App() {
 
-function Square({valor, func}) {
-  return <button className="square" onClick={func}>{valor}</button>
-}
+  // ===============================
+  // Estados do jogo
+  // ===============================
 
-export default function Campo() {
   const [quadrados, setQuadrados] = useState(Array(9).fill(null));
-  const [estado, setEstado] = useState(false);
-  const [status, setStatus] = useState(null);
-  const [placarX, setPlacarX] = useState(0);
-const [placarO, setPlacarO] = useState(0);
-const [empates, setEmpates] = useState(0);
-  
+  const [jogador1, setJogador1] = useState(true);
+  const [status, setStatus] = useState("");
 
+  const [placar1, setPlacar1] = useState(0);
+  const [placar2, setPlacar2] = useState(0);
+  const [empates, setEmpates] = useState(0);
 
-  function calcularVencedor(quadradosTemp) {
-  const linhas = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6]
-  ];
+  const [historico, setHistorico] = useState([]);
 
-  for (let i = 0; i < linhas.length; i++) {
-    const [a, b, c] = linhas[i];
+  const [linhaVencedora, setLinhaVencedora] = useState([]);
 
-    if (
-      quadradosTemp[a] &&
-      quadradosTemp[a] === quadradosTemp[b] &&
-      quadradosTemp[a] === quadradosTemp[c]
-    ) {
-      return quadradosTemp[a] === "X"
-        ? "Jogador 1 venceu!"
-        : "Jogador 2 venceu!";
+  // Máquina
+
+  const [contraMaquina, setContraMaquina] = useState(false);
+
+  // ===============================
+  // Pokémon
+  // ===============================
+
+  const [pokemon1, setPokemon1] = useState(null);
+  const [pokemon2, setPokemon2] = useState(null);
+
+  const [nomePokemon1, setNomePokemon1] = useState("pikachu");
+  const [nomePokemon2, setNomePokemon2] = useState("bulbasaur");
+
+  const [erroPokemon, setErroPokemon] = useState("");
+
+  // ===============================
+  // Buscar Pokémon
+  // ===============================
+
+  async function buscarPokemon(nome) {
+
+    try {
+
+      const resposta = await fetch(
+        `https://pokeapi.co/api/v2/pokemon/${nome.toLowerCase()}`
+      );
+
+      if (!resposta.ok) {
+
+        throw new Error("Pokémon não encontrado.");
+
+      }
+
+      return await resposta.json();
+
+    } catch (erro) {
+
+      throw new Error(erro.message);
+
     }
+
   }
 
-  if (quadradosTemp.every(quadrado => quadrado !== null)) {
-    return "Deu empate!";
+  async function carregarPokemons() {
+
+    try {
+
+      setErroPokemon("");
+
+      const p1 = await buscarPokemon(nomePokemon1);
+      const p2 = await buscarPokemon(nomePokemon2);
+
+      setPokemon1(p1);
+      setPokemon2(p2);
+
+    } catch (erro) {
+
+      setPokemon1(null);
+      setPokemon2(null);
+
+      setErroPokemon(erro.message);
+
+    }
+
   }
 
-  return null;
+  useEffect(() => {
+
+    carregarPokemons();
+
+  }, []);
+    // ===============================
+  // Verificar vencedor
+  // ===============================
+
+  function calcularVencedor(tabuleiro) {
+
+    const linhas = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6]
+    ];
+
+    for (let i = 0; i < linhas.length; i++) {
+
+      const [a, b, c] = linhas[i];
+
+      if (
+        tabuleiro[a] &&
+        tabuleiro[a] === tabuleiro[b] &&
+        tabuleiro[a] === tabuleiro[c]
+      ) {
+
+        return {
+          vencedor: tabuleiro[a],
+          linha: linhas[i]
+        };
+
+      }
+
+    }
+
+    if (tabuleiro.every(item => item !== null)) {
+
+      return {
+        vencedor: "EMPATE",
+        linha: []
+      };
+
+    }
+
+    return null;
+
   }
 
-  function handleClick(i) {
-     if (status !== null) {
-    return;
-     }
-    const quadradoTemp = quadrados.slice();
-    if (quadradoTemp[i]!=null) {
+  // ===============================
+  // Jogada
+  // ===============================
+
+  function handleClick(posicao) {
+
+    if (status !== "") return;
+
+    if (quadrados[posicao] !== null) return;
+
+    const novoTabuleiro = [...quadrados];
+
+    const jogador = jogador1 ? "P1" : "P2";
+
+    novoTabuleiro[posicao] = jogador;
+
+    setQuadrados(novoTabuleiro);
+
+    setHistorico(prev => [
+      ...prev,
+      {
+        jogador,
+        posicao
+      }
+    ]);
+
+    const resultado = calcularVencedor(novoTabuleiro);
+
+    if (resultado) {
+
+      if (resultado.vencedor === "P1") {
+
+        setStatus(`${pokemon1?.name} venceu!`);
+        setPlacar1(prev => prev + 1);
+        setLinhaVencedora(resultado.linha);
+
+      } else if (resultado.vencedor === "P2") {
+
+        setStatus(`${pokemon2?.name} venceu!`);
+        setPlacar2(prev => prev + 1);
+        setLinhaVencedora(resultado.linha);
+
+      } else {
+
+        setStatus("Empate!");
+        setEmpates(prev => prev + 1);
+
+      }
+
       return;
+
     }
 
-    if (estado==false) {
-      quadradoTemp[i] = "X";
-    } else {
-      quadradoTemp[i] = "O";
-    }
-    setQuadrados(quadradoTemp);
-    setEstado(!estado);
-    const vencedor = calcularVencedor(quadradoTemp);
-
-if (vencedor === "Jogador 1 venceu!") {
-  setPlacarX(placarX + 1);
-}
-
-if (vencedor === "Jogador 2 venceu!") {
-  setPlacarO(placarO + 1);
-}
-
-if (vencedor === "Deu empate!") {
-  setEmpates(empates + 1);
-}
-
-setStatus(vencedor);
+    setJogador1(!jogador1);
 
   }
-  return <>
-    <div className="board-row">
-      <Square valor={quadrados[0]} func={() =>handleClick(0)} />
-      <Square valor={quadrados[1]} func={() =>handleClick(1)}/>
-      <Square valor={quadrados[2]} func={() =>handleClick(2)}/>
-    </div>
-    <div className="board-row">
-      <Square valor={quadrados[3]} func={() =>handleClick(3)}/>
-      <Square valor={quadrados[4]} func={() =>handleClick(4)}/>
-      <Square valor={quadrados[5]} func={() =>handleClick(5)}/>
-    </div>
-    <div className="board-row">
-      <Square valor={quadrados[6]} func={() =>handleClick(6)}/>
-      <Square valor={quadrados[7]} func={() =>handleClick(7)}/>
-      <Square valor={quadrados[8]} func={() =>handleClick(8)}/>  
-    </div>
-    <div><h1>{status}</h1></div>
-    <div>
-  <h2>Placar</h2>
-  <p>Jogador X: {placarX}</p>
-  <p>Jogador O: {placarO}</p>
-  <p>Empates: {empates}</p>
-</div>
-    <BotaoReiniciar setQuadrados={setQuadrados} setEstado={setEstado} setStatus={setStatus}/>
 
-  </>;
+  // ===============================
+  // Reiniciar
+  // ===============================
+
+  function reiniciarJogo() {
+
+    setQuadrados(Array(9).fill(null));
+    setJogador1(true);
+    setStatus("");
+    setLinhaVencedora([]);
+    setHistorico([]);
+
+  }
+
+  // ===============================
+  // Desfazer
+  // ===============================
+
+  function desfazerJogada() {
+
+    if (historico.length === 0) return;
+
+    if (status !== "") return;
+
+    const novoHistorico = [...historico];
+
+    novoHistorico.pop();
+
+    const novoTabuleiro = Array(9).fill(null);
+
+    novoHistorico.forEach(jogada => {
+
+      novoTabuleiro[jogada.posicao] = jogada.jogador;
+
+    });
+
+    setQuadrados(novoTabuleiro);
+
+    setHistorico(novoHistorico);
+
+    setJogador1(novoHistorico.length % 2 === 0);
+
 }
+    return (
+    <>
+      <h1>Jogo da Velha Pokémon</h1>
+
+      <PokemonSelector
+        nomePokemon1={nomePokemon1}
+        nomePokemon2={nomePokemon2}
+        setNomePokemon1={setNomePokemon1}
+        setNomePokemon2={setNomePokemon2}
+        carregarPokemons={carregarPokemons}
+        erroPokemon={erroPokemon}
+        pokemon1={pokemon1}
+        pokemon2={pokemon2}
+      />
+
+      <h2>
+        {status !== ""
+          ? status
+          : `Vez de ${
+              jogador1
+                ? pokemon1?.name || "Jogador 1"
+                : pokemon2?.name || "Jogador 2"
+            }`}
+      </h2>
+
+      <Board
+        quadrados={quadrados}
+        handleClick={handleClick}
+        pokemon1={pokemon1}
+        pokemon2={pokemon2}
+        linhaVencedora={linhaVencedora}
+      />
+
+      <Scoreboard
+        pokemon1={pokemon1}
+        pokemon2={pokemon2}
+        placar1={placar1}
+        placar2={placar2}
+        empates={empates}
+      />
+
+      <div style={{ marginTop: "20px" }}>
+        <button onClick={desfazerJogada}>
+          Desfazer Jogada
+        </button>
+
+        <BotaoReiniciar
+          reiniciarJogo={reiniciarJogo}
+        />
+      </div>
+
+      <h2>Histórico</h2>
+
+      <ul>
+        {historico.map((jogada, index) => (
+          <li key={index}>
+            Jogada {index + 1}:{" "}
+            {jogada.jogador === "P1"
+              ? pokemon1?.name
+              : pokemon2?.name}
+            {" "}na posição {jogada.posicao}
+          </li>
+        ))}
+      </ul>
+
+      <div style={{ marginTop: "20px" }}>
+        <label>
+          <input
+            type="checkbox"
+            checked={contraMaquina}
+            onChange={() => setContraMaquina(!contraMaquina)}
+          />
+          Jogar contra a máquina
+        </label>
+      </div>
+    </>
+  );
+            }
