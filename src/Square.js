@@ -22,12 +22,12 @@ export default function Square({
       onClick={onClick}
     >
       {pokemon ? (
-    <img
-       src={pokemon?.sprites?.front_default}
-       alt={pokemon?.name}
-       width="55"
-       height="55"
-   />
+        <img
+          src={pokemon?.sprites?.front_default}
+          alt={pokemon?.name}
+          width="55"
+          height="55"
+        />
       ) : null}
     </button>
   );
