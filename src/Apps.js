@@ -480,19 +480,20 @@ export default function App() {
                 <h2>Histórico de Jogadas</h2>
 
       <ul>
-        {historico.map((jogada, index) => (
-          <li key={index}>
-            Jogada {index + 1}:{" "}
-            {jogada.jogador === "P1"
-              pokemon1?.name.charAt(0).toUpperCase() + pokemon1?.name.slice(1) || "Jogador 1"
-              pokemon2?.name
-  ? pokemon2.name.charAt(0).toUpperCase() + pokemon2.name.slice(1)
-  : "Jogador 2"
-            na posição {jogada.posicao}
-          </li>
-        ))}
-      </ul>
-
+  {historico.map((jogada, index) => (
+    <li key={index}>
+      Jogada {index + 1}:{" "}
+      {jogada.jogador === "P1"
+        ? (pokemon1?.name
+            ? pokemon1.name.charAt(0).toUpperCase() + pokemon1.name.slice(1)
+            : "Jogador 1")
+        : (pokemon2?.name
+            ? pokemon2.name.charAt(0).toUpperCase() + pokemon2.name.slice(1)
+            : "Jogador 2")}{" "}
+      na posição {jogada.posicao}
+    </li>
+  ))}
+</ul>
       <br />
 
       <label>
