@@ -1,17 +1,22 @@
 import { useState, useEffect } from "react";
+
 import Board from "./Board";
-import Scoreboard from "./Scoreboard";
 import PokemonSelector from "./PokemonSelector";
+import Scoreboard from "./Scoreboard";
 import { BotaoReiniciar } from "./Reiniciar";
 
 export default function App() {
 
-  // ===============================
+  // ==========================
   // Estados do jogo
-  // ===============================
+  // ==========================
 
-  const [quadrados, setQuadrados] = useState(Array(9).fill(null));
+  const [quadrados, setQuadrados] = useState(
+    Array(9).fill(null)
+  );
+
   const [jogador1, setJogador1] = useState(true);
+
   const [status, setStatus] = useState("");
 
   const [placar1, setPlacar1] = useState(0);
@@ -22,37 +27,46 @@ export default function App() {
 
   const [linhaVencedora, setLinhaVencedora] = useState([]);
 
-  // Máquina
-
   const [contraMaquina, setContraMaquina] = useState(false);
 
-  // ===============================
+  const [maquinaJogando, setMaquinaJogando] =
+    useState(false);
+
+  // ==========================
   // Pokémon
-  // ===============================
+  // ==========================
 
   const [pokemon1, setPokemon1] = useState(null);
   const [pokemon2, setPokemon2] = useState(null);
 
-  const [nomePokemon1, setNomePokemon1] = useState("pikachu");
-  const [nomePokemon2, setNomePokemon2] = useState("bulbasaur");
+  const [nomePokemon1, setNomePokemon1] =
+    useState("pikachu");
 
-  const [erroPokemon, setErroPokemon] = useState("");
+  const [nomePokemon2, setNomePokemon2] =
+    useState("bulbasaur");
 
-  // ===============================
+  const [erroPokemon, setErroPokemon] =
+    useState("");
+
+  // ==========================
   // Buscar Pokémon
-  // ===============================
+  // ==========================
 
   async function buscarPokemon(nome) {
 
     try {
 
       const resposta = await fetch(
+
         `https://pokeapi.co/api/v2/pokemon/${nome.toLowerCase()}`
+
       );
 
       if (!resposta.ok) {
 
-        throw new Error("Pokémon não encontrado.");
+        throw new Error(
+          "Pokémon não encontrado."
+        );
 
       }
 
@@ -72,15 +86,22 @@ export default function App() {
 
       setErroPokemon("");
 
-      const p1 = await buscarPokemon(nomePokemon1);
-      const p2 = await buscarPokemon(nomePokemon2);
+      const p1 = await buscarPokemon(
+        nomePokemon1
+      );
+
+      const p2 = await buscarPokemon(
+        nomePokemon2
+      );
 
       setPokemon1(p1);
+
       setPokemon2(p2);
 
     } catch (erro) {
 
       setPokemon1(null);
+
       setPokemon2(null);
 
       setErroPokemon(erro.message);
@@ -89,14 +110,19 @@ export default function App() {
 
   }
 
+  // ==========================
+  // Pokémon iniciais
+  // ==========================
+
   useEffect(() => {
 
     carregarPokemons();
 
   }, []);
-    // ===============================
+
+  // ==========================
   // Verificar vencedor
-  // ===============================
+  // ==========================
 
   function calcularVencedor(tabuleiro) {
 
@@ -130,7 +156,7 @@ export default function App() {
 
     }
 
-    if (tabuleiro.every(item => item !== null)) {
+    if (tabuleiro.every(casa => casa !== null)) {
 
       return {
         vencedor: "EMPATE",
@@ -143,13 +169,15 @@ export default function App() {
 
   }
 
-  // ===============================
-  // Jogada
-  // ===============================
+  // ==========================
+  // Clique do jogador
+  // ==========================
 
   function handleClick(posicao) {
 
     if (status !== "") return;
+
+    if (maquinaJogando) return;
 
     if (quadrados[posicao] !== null) return;
 
@@ -162,32 +190,48 @@ export default function App() {
     setQuadrados(novoTabuleiro);
 
     setHistorico(prev => [
+
       ...prev,
+
       {
+
         jogador,
-        posicao
+
+        posicao,
+
+        tabuleiro: [...novoTabuleiro]
+
       }
+
     ]);
 
-    const resultado = calcularVencedor(novoTabuleiro);
+    const resultado =
+      calcularVencedor(novoTabuleiro);
 
     if (resultado) {
+
+      setLinhaVencedora(resultado.linha);
 
       if (resultado.vencedor === "P1") {
 
         setStatus(`${pokemon1?.name} venceu!`);
-        setPlacar1(prev => prev + 1);
-        setLinhaVencedora(resultado.linha);
 
-      } else if (resultado.vencedor === "P2") {
+        setPlacar1(prev => prev + 1);
+
+      }
+
+      else if (resultado.vencedor === "P2") {
 
         setStatus(`${pokemon2?.name} venceu!`);
-        setPlacar2(prev => prev + 1);
-        setLinhaVencedora(resultado.linha);
 
-      } else {
+        setPlacar2(prev => prev + 1);
+
+      }
+
+      else {
 
         setStatus("Empate!");
+
         setEmpates(prev => prev + 1);
 
       }
@@ -200,51 +244,182 @@ export default function App() {
 
   }
 
-  // ===============================
-  // Reiniciar
-  // ===============================
+  // ==========================
+  // Jogada da máquina
+  // ==========================
+
+  function jogarMaquina() {
+
+    const livres = quadrados
+      .map((valor, indice) =>
+        valor === null ? indice : null
+      )
+      .filter(indice => indice !== null);
+
+    if (livres.length === 0) {
+
+      setMaquinaJogando(false);
+
+      return;
+
+    }
+
+    const indice =
+      livres[Math.floor(Math.random() * livres.length)];
+
+    const novoTabuleiro = [...quadrados];
+
+    novoTabuleiro[indice] = "P2";
+
+    setQuadrados(novoTabuleiro);
+
+    setHistorico(prev => [
+
+      ...prev,
+
+      {
+
+        jogador: "P2",
+
+        posicao: indice,
+
+        tabuleiro: [...novoTabuleiro]
+
+      }
+
+    ]);
+
+    const resultado =
+      calcularVencedor(novoTabuleiro);
+
+    if (resultado) {
+
+      setLinhaVencedora(resultado.linha);
+
+      if (resultado.vencedor === "P2") {
+
+        setStatus(`${pokemon2?.name} venceu!`);
+
+        setPlacar2(prev => prev + 1);
+
+      }
+
+      else if (resultado.vencedor === "EMPATE") {
+
+        setStatus("Empate!");
+
+        setEmpates(prev => prev + 1);
+
+      }
+
+      setMaquinaJogando(false);
+
+      return;
+
+    }
+
+    setJogador1(true);
+
+    setMaquinaJogando(false);
+
+  }
+
+  // ==========================
+  // Efeito da máquina
+  // ==========================
+
+  useEffect(() => {
+
+    if (!contraMaquina) return;
+
+    if (status !== "") return;
+
+    if (jogador1) return;
+
+    if (maquinaJogando) return;
+
+    setMaquinaJogando(true);
+
+    const timer = setTimeout(() => {
+
+      jogarMaquina();
+
+    }, 500);
+
+    return () => clearTimeout(timer);
+
+  }, [jogador1, contraMaquina, status, maquinaJogando]);
+
+  // ==========================
+  // Reiniciar jogo
+  // ==========================
 
   function reiniciarJogo() {
 
     setQuadrados(Array(9).fill(null));
+
     setJogador1(true);
+
     setStatus("");
+
     setLinhaVencedora([]);
+
     setHistorico([]);
+
+    setMaquinaJogando(false);
 
   }
 
-  // ===============================
-  // Desfazer
-  // ===============================
+  // ==========================
+  // Desfazer jogada
+  // ==========================
 
   function desfazerJogada() {
 
     if (historico.length === 0) return;
 
-    if (status !== "") return;
+    if (maquinaJogando) return;
 
     const novoHistorico = [...historico];
 
     novoHistorico.pop();
 
-    const novoTabuleiro = Array(9).fill(null);
+    if (novoHistorico.length === 0) {
 
-    novoHistorico.forEach(jogada => {
+      setQuadrados(Array(9).fill(null));
 
-      novoTabuleiro[jogada.posicao] = jogada.jogador;
+      setHistorico([]);
 
-    });
+      setJogador1(true);
 
-    setQuadrados(novoTabuleiro);
+      setStatus("");
+
+      setLinhaVencedora([]);
+
+      return;
+
+    }
+
+    const ultimaJogada =
+      novoHistorico[novoHistorico.length - 1];
+
+    setQuadrados([...ultimaJogada.tabuleiro]);
 
     setHistorico(novoHistorico);
 
-    setJogador1(novoHistorico.length % 2 === 0);
+    setStatus("");
 
-}
-    return (
+    setLinhaVencedora([]);
+
+    setJogador1(
+      ultimaJogada.jogador === "P2"
+    );
+
+  }
+
+  return (
     <>
+
       <h1>Jogo da Velha Pokémon</h1>
 
       <PokemonSelector
@@ -254,11 +429,10 @@ export default function App() {
         setNomePokemon2={setNomePokemon2}
         carregarPokemons={carregarPokemons}
         erroPokemon={erroPokemon}
-        pokemon1={pokemon1}
-        pokemon2={pokemon2}
       />
 
       <h2>
+
         {status !== ""
           ? status
           : `Vez de ${
@@ -266,6 +440,7 @@ export default function App() {
                 ? pokemon1?.name || "Jogador 1"
                 : pokemon2?.name || "Jogador 2"
             }`}
+
       </h2>
 
       <Board
@@ -276,6 +451,8 @@ export default function App() {
         linhaVencedora={linhaVencedora}
       />
 
+      <br />
+
       <Scoreboard
         pokemon1={pokemon1}
         pokemon2={pokemon2}
@@ -284,40 +461,46 @@ export default function App() {
         empates={empates}
       />
 
-      <div style={{ marginTop: "20px" }}>
-        <button onClick={desfazerJogada}>
-          Desfazer Jogada
-        </button>
+      <br />
 
-        <BotaoReiniciar
-          reiniciarJogo={reiniciarJogo}
-        />
-      </div>
+      <button onClick={desfazerJogada}>
+        Desfazer Jogada
+      </button>
 
-      <h2>Histórico</h2>
+      {" "}
+
+      <BotaoReiniciar
+        reiniciarJogo={reiniciarJogo}
+      />
+
+      <br />
+      <br />
+                <h2>Histórico de Jogadas</h2>
 
       <ul>
         {historico.map((jogada, index) => (
           <li key={index}>
             Jogada {index + 1}:{" "}
             {jogada.jogador === "P1"
-              ? pokemon1?.name
-              : pokemon2?.name}
-            {" "}na posição {jogada.posicao}
+              ? pokemon1?.name || "Jogador 1"
+              : pokemon2?.name || "Jogador 2"}{" "}
+            na posição {jogada.posicao}
           </li>
         ))}
       </ul>
 
-      <div style={{ marginTop: "20px" }}>
-        <label>
-          <input
-            type="checkbox"
-            checked={contraMaquina}
-            onChange={() => setContraMaquina(!contraMaquina)}
-          />
-          Jogar contra a máquina
-        </label>
-      </div>
+      <br />
+
+      <label>
+        <input
+          type="checkbox"
+          checked={contraMaquina}
+          onChange={() => setContraMaquina(!contraMaquina)}
+        />
+        Jogar contra a máquina
+      </label>
+
     </>
   );
-            }
+
+}
