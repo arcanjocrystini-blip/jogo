@@ -20,7 +20,11 @@ export default function Scoreboard({
               height="50"
             />
             <p>
-              <strong>{pokemon1.name}</strong>: {placar1}
+              <strong>
+  {pokemon1.name.charAt(0).toUpperCase() +
+    pokemon1.name.slice(1)}
+             </strong>
+               : {placar1}
             </p>
           </>
         ) : (
@@ -38,7 +42,11 @@ export default function Scoreboard({
               height="50"
             />
             <p>
-              <strong>{pokemon2.name}</strong>: {placar2}
+              <strong>
+  {pokemon2.name.charAt(0).toUpperCase() +
+    pokemon2.name.slice(1)}
+              </strong>
+                : {placar2}
             </p>
           </>
         ) : (
