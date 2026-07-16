@@ -1,125 +1,51 @@
 * {
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: sans-serif;
-    margin: 20px;
-    padding: 0;
-  }
-  
-  h1 {
-    margin-top: 0;
-    font-size: 22px;
-  }
-  
-  h2 {
-    margin-top: 0;
-    font-size: 20px;
-  }
-  
-  h3 {
-    margin-top: 0;
-    font-size: 18px;
-  }
-  
-  h4 {
-    margin-top: 0;
-    font-size: 16px;
-  }
-  
-  h5 {
-    margin-top: 0;
-    font-size: 14px;
-  }
-  
-  h6 {
-    margin-top: 0;
-    font-size: 12px;
-  }
-  
-  code {
-    font-size: 1.2em;
-  }
-  
-  ul {
-    padding-inline-start: 20px;
-  }
-  
-  * {
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: sans-serif;
-    margin: 20px;
-    padding: 0;
-  }
-  
-  .square {
-    background: #fff;
-    border: 1px solid #999;
-    float: left;
-    font-size: 24px;
-    font-weight: bold;
-    line-height: 34px;
-    height: 34px;
-    margin-right: -1px;
-    margin-top: -1px;
-    padding: 0;
-    text-align: center;
-    width: 34px;
-  }
-  
-  .board-row:after {
-    clear: both;
-    content: '';
-    display: table;
-  }
-  
-  .status {
-    margin-bottom: 10px;
-  }
-  .game {
-    display: flex;
-    flex-direction: row;
-  }
-  
-  .game-info {
-    margin-left: 20px;
-  }
+  box-sizing: border-box;
+}
 
-  .vencedor {
-    background-color: yellow;
-    border: 3px solid green;
-  }
-  .placar {
-    margin-top: 20px;
-    font-weight: bold;
-  }
-  .historico {
-    margin-top: 20px;
-  }
+body {
+  margin: 20px;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f5f5f5;
+  text-align: center;
+}
 
-/* ===========================
-   Tabuleiro
-=========================== */
+h1 {
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+
+h2 {
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
+
+/* ==========================
+   TABULEIRO
+========================== */
 
 .board-row {
   display: flex;
+  justify-content: center;
 }
 
 .square {
   width: 80px;
   height: 80px;
   margin: 2px;
-  border: 2px solid #555;
+  border: 2px solid #444;
   background: white;
   cursor: pointer;
 
   display: flex;
   justify-content: center;
   align-items: center;
+
+  transition: 0.2s;
+}
+
+.square:hover {
+  background: #eeeeee;
 }
 
 .square img {
@@ -127,16 +53,27 @@
   height: 60px;
 }
 
-/* Destaque da vitória */
+/* Casas vencedoras */
 
 .winner {
   background-color: gold;
   border: 3px solid green;
 }
 
-/* ===========================
-   Pokémon
-=========================== */
+/* ==========================
+   BOTÕES
+========================== */
+
+button {
+  padding: 8px 14px;
+  margin: 5px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+/* ==========================
+   POKÉMON SELECTOR
+========================== */
 
 .pokemon-selector {
   margin-bottom: 25px;
@@ -145,19 +82,22 @@
 .pokemon-inputs {
   display: flex;
   justify-content: center;
-  gap: 60px;
-  margin-bottom: 20px;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
 }
 
-.pokemon-inputs input {
-  padding: 6px;
-  width: 150px;
+.pokemon-inputs input,
+input[type="text"] {
+  width: 170px;
+  padding: 8px;
   text-align: center;
+  font-size: 15px;
 }
 
-/* ===========================
-   Placar
-=========================== */
+/* ==========================
+   PLACAR
+========================== */
 
 .scoreboard {
   margin-top: 20px;
@@ -168,6 +108,33 @@
 }
 
 .score-item img {
+  width: 60px;
+  height: 60px;
   display: block;
   margin: auto;
+}
+
+/* ==========================
+   HISTÓRICO
+========================== */
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin: 5px 0;
+}
+
+/* ==========================
+   CHECKBOX
+========================== */
+
+label {
+  font-size: 16px;
+}
+
+input[type="checkbox"] {
+  margin-right: 8px;
 }
