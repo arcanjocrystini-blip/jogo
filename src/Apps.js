@@ -348,7 +348,7 @@ export default function App() {
 
     return () => clearTimeout(timer);
 
-  }, [jogador1, contraMaquina, status, maquinaJogando]);
+  }, [jogador1, contraMaquina, status, maquinaJogando, quadrados]);
 
   // ==========================
   // Reiniciar jogo
@@ -421,15 +421,17 @@ export default function App() {
     <>
 
       <h1>Jogo da Velha Pokémon</h1>
-
-      <PokemonSelector
-        nomePokemon1={nomePokemon1}
-        nomePokemon2={nomePokemon2}
-        setNomePokemon1={setNomePokemon1}
-        setNomePokemon2={setNomePokemon2}
-        carregarPokemons={carregarPokemons}
-        erroPokemon={erroPokemon}
-      />
+    
+    <PokemonSelector
+      nomePokemon1={nomePokemon1}
+      nomePokemon2={nomePokemon2}
+      setNomePokemon1={setNomePokemon1}
+      setNomePokemon2={setNomePokemon2}
+      carregarPokemons={carregarPokemons}
+      erroPokemon={erroPokemon}
+      pokemon1={pokemon1}
+      pokemon2={pokemon2}
+/>
 
       <h2>
 
@@ -482,8 +484,10 @@ export default function App() {
           <li key={index}>
             Jogada {index + 1}:{" "}
             {jogada.jogador === "P1"
-              ? pokemon1?.name || "Jogador 1"
-              : pokemon2?.name || "Jogador 2"}{" "}
+              pokemon1?.name.charAt(0).toUpperCase() + pokemon1?.name.slice(1) || "Jogador 1"
+              pokemon2?.name
+  ? pokemon2.name.charAt(0).toUpperCase() + pokemon2.name.slice(1)
+  : "Jogador 2"
             na posição {jogada.posicao}
           </li>
         ))}
@@ -502,5 +506,4 @@ export default function App() {
 
     </>
   );
-
 }
