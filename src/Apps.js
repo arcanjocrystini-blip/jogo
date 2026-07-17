@@ -177,7 +177,7 @@ export default function App() {
 
     if (status !== "") return;
 
-    if (maquinaJogando) return;
+    if (maquinaJogando) jogarMaquina();
 
     if (quadrados[posicao] !== null) return;
 
@@ -257,7 +257,7 @@ export default function App() {
       .filter(indice => indice !== null);
 
     if (livres.length === 0) {
-
+      console.log("Nenhum livre");
       setMaquinaJogando(false);
 
       return;
@@ -270,9 +270,9 @@ export default function App() {
     const novoTabuleiro = [...quadrados];
 
     novoTabuleiro[indice] = "P2";
-
+    console.log("mudando o tabuleiro");
     setQuadrados(novoTabuleiro);
-
+    console.log("jogada feita");
     setHistorico(prev => [
 
       ...prev,
@@ -312,15 +312,16 @@ export default function App() {
 
       }
 
-      setMaquinaJogando(false);
-
+      //setMaquinaJogando(false);
+      console.log("jogo encerrado");
       return;
 
     }
 
     setJogador1(true);
 
-    setMaquinaJogando(false);
+   // setMaquinaJogando(false);
+   console.log("final da função");
 
   }
 
@@ -336,9 +337,9 @@ export default function App() {
 
     if (jogador1) return;
 
-    if (maquinaJogando) return;
+    //if (maquinaJogando) return;
 
-    setMaquinaJogando(true);
+    //setMaquinaJogando(true);
 
     const timer = setTimeout(() => {
 
@@ -368,6 +369,16 @@ export default function App() {
 
     setMaquinaJogando(false);
 
+  }
+
+  function teste() {
+    setContraMaquina(!contraMaquina);
+    if (contraMaquina) {
+      console.log("Maquina jogando");
+      setMaquinaJogando(true);
+    }
+    console.log("Clicou!");
+    console.log(contraMaquina);
   }
 
   // ==========================
@@ -500,7 +511,7 @@ export default function App() {
         <input
           type="checkbox"
           checked={contraMaquina}
-          onChange={() => setContraMaquina(!contraMaquina)}
+          onChange={() => teste()}
         />
         Jogar contra a máquina
       </label>
